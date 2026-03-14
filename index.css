@@ -1,6 +1,6 @@
 /* 
    Google Dark Mode Style - FF14 Analyzer V3.5
-   Wide Layout Edition (1000px)
+   Enhanced RWD Edition (Mobile & Tablet Friendly)
 */
 
 :root {
@@ -15,6 +15,10 @@
     --g-hover: rgba(138, 180, 248, 0.08);
 }
 
+* {
+    box-sizing: border-box; /* 確保內距不影響寬度計算 */
+}
+
 body { 
     font-family: 'Google Sans', 'Roboto', 'PingFang TC', Arial, sans-serif; 
     background-color: var(--g-bg); 
@@ -25,7 +29,6 @@ body {
     line-height: 1.6;
 }
 
-/* 寬度優化：從 840px 提升至 1000px */
 .container { 
     max-width: 1000px; 
     margin: auto; 
@@ -40,7 +43,7 @@ h1 {
     letter-spacing: -0.5px;
 }
 
-/* 控制面板 - 增加內距與呼吸感 */
+/* --- 控制面板 --- */
 .controls { 
     background: var(--g-surface); 
     border-radius: 28px; 
@@ -66,7 +69,6 @@ h1 {
     padding-left: 4px;
 }
 
-/* 圓潤的輸入框 */
 select, input { 
     background: #303134; 
     border: 1px solid var(--g-border); 
@@ -76,6 +78,7 @@ select, input {
     font-size: 15px;
     outline: none;
     transition: all 0.2s ease;
+    width: 100%; /* 確保在容器內填滿 */
 }
 
 select:focus, input:focus {
@@ -84,7 +87,6 @@ select:focus, input:focus {
     box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.2);
 }
 
-/* 時間範圍區塊 */
 .time-range { 
     grid-column: 1 / -1; 
     display: grid; 
@@ -95,7 +97,6 @@ select:focus, input:focus {
     border-top: 1px solid var(--g-border);
 }
 
-/* 搜尋按鈕 - 經典 Google 膠囊感 */
 .main-search { 
     grid-column: 1 / -1; 
     background: var(--g-blue); 
@@ -107,8 +108,9 @@ select:focus, input:focus {
     font-size: 15px;
     cursor: pointer; 
     transition: background 0.2s, transform 0.1s;
-    margin: 10px auto 0; /* 置中並限制寬度 */
+    margin: 10px auto 0;
     min-width: 200px;
+    display: block;
 }
 
 .main-search:hover { 
@@ -120,7 +122,7 @@ select:focus, input:focus {
     transform: scale(0.98);
 }
 
-/* 結果卡片系統 */
+/* --- 結果卡片系統 --- */
 .sequence-card { 
     background: var(--g-card); 
     border-radius: 20px; 
@@ -165,8 +167,8 @@ select:focus, input:focus {
     font-size: 13px; 
     font-weight: 500;
     cursor: pointer; 
-    margin-left: 10px;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .copy-btn:hover { 
@@ -174,7 +176,7 @@ select:focus, input:focus {
     border-color: var(--g-blue);
 }
 
-/* 天氣列表佈局優化 */
+/* --- 天氣列表佈局 --- */
 .night-grid { 
     padding: 32px; 
 }
@@ -196,6 +198,7 @@ select:focus, input:focus {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    flex-shrink: 0;
 }
 
 .weather-box { 
@@ -208,7 +211,6 @@ select:focus, input:focus {
     border: 1px solid transparent;
 }
 
-/* 強化雪地的高亮視覺 */
 .weather-box.snow { 
     background: rgba(129, 201, 149, 0.08);
     border: 1px solid rgba(129, 201, 149, 0.25);
@@ -241,21 +243,108 @@ select:focus, input:focus {
     font-weight: 600; 
 }
 
-/* 針對小螢幕的自動縮減佈局 */
-@media (max-width: 800px) {
+/* =============================================
+   RWD 響應式調整 (Media Queries)
+   ============================================= */
+
+/* 1. 平板裝置 (1024px 以下) */
+@media (max-width: 1024px) {
     .controls {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
         padding: 24px;
     }
+}
+
+/* 2. 行動裝置 (768px 以下) */
+@media (max-width: 768px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    h1 {
+        font-size: 26px;
+        margin-bottom: 24px;
+    }
+
+    .controls {
+        grid-template-columns: 1fr; /* 全改為單欄 */
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .time-range {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .main-search {
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+
+    .card-header h3 span {
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+    }
+
+    .copy-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .night-grid {
+        padding: 12px;
+    }
+
     .round-row {
         flex-direction: column;
-        gap: 15px;
         align-items: stretch;
+        padding: 16px;
+        gap: 12px;
     }
+
     .round-label {
         width: 100%;
         text-align: center;
         border-bottom: 1px solid var(--g-border);
         padding-bottom: 10px;
+    }
+
+    /* 在手機上讓天氣格子排成左右兩欄或單欄 */
+    .weather-box {
+        min-width: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        text-align: left;
+    }
+
+    .weather-box strong {
+        margin-bottom: 0;
+    }
+
+    .weather-box .lt-val {
+        font-size: 16px;
+    }
+    
+    .weather-box .ws-val {
+        margin-top: 0;
+        margin-left: 8px;
+    }
+}
+
+/* 3. 極窄螢幕 (380px 以下) */
+@media (max-width: 380px) {
+    .weather-box {
+        flex-wrap: wrap; /* 空間不足時內容自動換行 */
     }
 }
