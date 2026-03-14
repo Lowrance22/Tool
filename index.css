@@ -1,95 +1,300 @@
 /* 
    Google Dark Mode Style - FF14 Analyzer V3.5
-   Mobile-First Final Optimized Version
+   Final Integrated Version: Mobile-First & Desktop Optimized
 */
 
 :root {
-    --g-blue: #8ab4f8;
-    --g-green: #81c995;
-    --g-bg: #202124;
-    --g-surface: #2b2d31;
-    --g-card: #202124;
-    --g-text: #e8eaed;
-    --g-text-sub: #9aa0a6;
-    --g-border: #3c4043;
+    --g-blue: #8ab4f8;          /* Google Dark Blue */
+    --g-green: #81c995;         /* Google Dark Green */
+    --g-bg: #202124;            /* Primary Dark Gray Background */
+    --g-surface: #2b2d31;       /* Secondary Surface Color */
+    --g-card: #202124;          /* Card Interior Background */
+    --g-text: #e8eaed;          /* High-emphasis Text */
+    --g-text-sub: #9aa0a6;      /* Low-emphasis Text */
+    --g-border: #3c4043;        /* Standard Divider Color */
 }
 
-* { box-sizing: border-box; }
+/* 基礎重設 */
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent;
+}
 
 body { 
-    font-family: 'Google Sans', sans-serif; 
+    font-family: 'Google Sans', 'Roboto', 'PingFang TC', sans-serif; 
     background-color: var(--g-bg); 
     color: var(--g-text); 
     margin: 0; 
     padding: 20px 15px; 
     line-height: 1.6;
-    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
 }
 
-.container { max-width: 1000px; margin: auto; width: 100%; }
-h1 { text-align: center; font-size: 24px; font-weight: 400; margin-bottom: 24px; }
+.container { 
+    max-width: 1000px; 
+    margin: auto; 
+    width: 100%; 
+}
 
-/* --- 控制面板佈局 --- */
+h1 { 
+    text-align: center; 
+    font-size: 24px; 
+    font-weight: 400; 
+    margin-bottom: 24px; 
+    letter-spacing: -0.5px;
+}
+
+/* --- 控制面板佈局 (Mobile Default) --- */
 .controls { 
     background: var(--g-surface); 
-    border-radius: 20px; 
+    border-radius: 24px; 
     padding: 20px; 
     display: flex; 
     flex-direction: column;
     gap: 16px;
     border: 1px solid var(--g-border);
     margin-bottom: 30px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
-.control-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
-.control-group label { font-size: 13px; color: var(--g-blue); font-weight: 500; }
+.control-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 6px; 
+    width: 100%; 
+}
 
+.control-group label { 
+    font-size: 13px; 
+    color: var(--g-blue); 
+    font-weight: 500; 
+    padding-left: 4px;
+}
+
+/* 輸入控制項 */
 select, input { 
     background: #303134; 
     border: 1px solid var(--g-border); 
     color: #fff; 
-    padding: 12px; 
-    border-radius: 10px; 
+    padding: 12px 16px; 
+    border-radius: 12px; 
+    font-size: 15px;
     width: 100%;
-    appearance: none;
+    outline: none;
+    transition: border 0.2s, background 0.2s;
+    appearance: none; /* 移除行動版預設樣式 */
 }
 
-.time-range { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; border-top: 1px solid var(--g-border); }
-.main-search { background: var(--g-blue); color: #202124; border: none; padding: 14px; border-radius: 100px; width: 100%; }
+select:focus, input:focus {
+    border-color: var(--g-blue);
+    background: #35363a;
+}
+
+.time-range { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px; 
+    padding-top: 20px; 
+    border-top: 1px solid var(--g-border); 
+}
+
+/* --- 搜尋按鈕: 置中優化 --- */
+.main-search { 
+    background: var(--g-blue); 
+    color: #202124; 
+    border: none; 
+    padding: 14px 32px; 
+    border-radius: 100px; 
+    width: 100%;             /* 行動版滿版好點擊 */
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer; 
+    transition: background 0.2s, transform 0.1s;
+    margin: 10px auto 0;     /* 關鍵置中設定 */
+    display: block;
+}
+
+.main-search:hover { 
+    background: #aecbfa; 
+}
+
+.main-search:active {
+    transform: scale(0.98);
+}
 
 /* --- 結果卡片系統 --- */
-.sequence-card { background: var(--g-card); border-radius: 16px; margin-bottom: 24px; border: 1px solid var(--g-border); }
-.card-header { padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.card-header h3 { margin: 0; font-size: 17px; text-align: center; }
-.card-header h3 span { color: var(--g-text-sub); font-size: 13px; display: block; }
-.card-header div { display: flex; gap: 8px; width: 100%; }
+.sequence-card { 
+    background: var(--g-card); 
+    border-radius: 20px; 
+    margin-bottom: 24px; 
+    border: 1px solid var(--g-border);
+    overflow: hidden;
+}
+
+.card-header { 
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 16px; 
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--g-border);
+}
+
+.card-header h3 { 
+    margin: 0; 
+    font-size: 18px; 
+    text-align: center;
+    font-weight: 500;
+}
+
+.card-header h3 span { 
+    color: var(--g-text-sub); 
+    font-size: 13px; 
+    display: block; 
+    margin-top: 4px;
+}
+
+.card-header div { 
+    display: flex; 
+    gap: 12px; 
+    width: 100%; 
+}
 
 .copy-btn { 
     flex: 1; 
     background: transparent; 
     color: var(--g-blue); 
     border: 1px solid var(--g-border); 
-    padding: 8px; 
+    padding: 10px; 
     border-radius: 100px; 
-    font-size: 12px; 
-    white-space: nowrap;
+    font-size: 13px; 
+    font-weight: 500;
+    cursor: pointer; 
+    transition: background 0.2s;
+}
+
+.copy-btn:hover {
+    background: rgba(138, 180, 248, 0.08);
 }
 
 /* 天氣內容區域 */
-.round-row { display: flex; flex-direction: column; gap: 8px; padding: 12px; background: #28292c; border-radius: 12px; margin-bottom: 12px; }
-.round-label { font-size: 12px; color: var(--g-text-sub); text-align: center; border-bottom: 1px solid var(--g-border); padding-bottom: 4px; }
-.weather-box { width: 100%; background: #303134; padding: 10px 14px; border-radius: 8px; display: flex; justify-content: space-between; }
-.snow { border: 1px solid rgba(129, 201, 149, 0.2); }
-.weather-box strong { font-size: 11px; color: var(--g-text-sub); }
-.ws-val { font-size: 12px; color: var(--g-text-sub); }
-.snow .ws-val { color: var(--g-green); font-weight: 600; }
+.night-grid {
+    padding: 16px;
+}
+
+.round-row { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    padding: 16px; 
+    background: #28292c; 
+    border-radius: 16px; 
+    margin-bottom: 12px; 
+}
+
+.round-label { 
+    font-size: 13px; 
+    font-weight: 600;
+    color: var(--g-text-sub); 
+    text-align: center; 
+    border-bottom: 1px solid var(--g-border); 
+    padding-bottom: 8px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.weather-box { 
+    width: 100%; 
+    background: #303134; 
+    padding: 14px; 
+    border-radius: 10px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border: 1px solid transparent;
+}
+
+.weather-box.snow { 
+    background: rgba(129, 201, 149, 0.05);
+    border: 1px solid rgba(129, 201, 149, 0.2); 
+}
+
+.weather-box strong { 
+    font-size: 11px; 
+    color: var(--g-text-sub); 
+}
+
+.lt-val {
+    font-weight: 500;
+}
+
+.ws-val { 
+    font-size: 13px; 
+    color: var(--g-text-sub); 
+}
+
+.snow .ws-val { 
+    color: var(--g-green); 
+    font-weight: 600; 
+}
 
 /* --- 桌機版優化 (寬度 > 768px) --- */
 @media (min-width: 768px) {
     body { padding: 40px 20px; }
-    .controls { display: grid; grid-template-columns: repeat(4, 1fr); padding: 32px 40px; }
-    .time-range { flex-direction: row; grid-column: 1 / -1; }
-    .card-header { flex-direction: row; }
-    .round-row { flex-direction: row; gap: 20px; }
-    .weather-box { flex-direction: column; text-align: center; }
+    
+    .controls { 
+        display: grid; 
+        grid-template-columns: repeat(4, 1fr); 
+        padding: 32px 40px; 
+        gap: 24px;
+    }
+    
+    .time-range { 
+        flex-direction: row; 
+        grid-column: 1 / -1; 
+        gap: 24px;
+    }
+
+    /* 置中且限制寬度的按鈕 */
+    .main-search { 
+        grid-column: 1 / -1; 
+        width: fit-content; 
+        min-width: 240px; 
+    }
+
+    .card-header { 
+        flex-direction: row; 
+        justify-content: space-between;
+        padding: 20px 32px;
+    }
+    
+    .card-header h3 { text-align: left; }
+    .card-header h3 span { display: inline; margin-left: 12px; }
+    .card-header div { width: auto; }
+    
+    .round-row { 
+        flex-direction: row; 
+        gap: 24px; 
+        padding: 20px 32px;
+    }
+    
+    .round-label { 
+        width: 80px; 
+        border-bottom: none; 
+        border-right: 1px solid var(--g-border);
+        padding-bottom: 0;
+        padding-right: 10px;
+        text-align: left;
+    }
+    
+    .weather-box { 
+        flex: 1;
+        flex-direction: column; 
+        text-align: center; 
+        padding: 16px;
+    }
+    
+    .weather-box strong { margin-bottom: 6px; }
+    .lt-val { font-size: 18px; }
 }
