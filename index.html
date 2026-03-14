@@ -4,49 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FF14 豐水之地 - 變異分析器 V3.5</title>
+    <!-- 引入獨立的 CSS 檔案 -->
+    <link rel="stylesheet" href="index.css">
+    <!-- 引入 JS 檔案 -->
     <script src="Weather.js"></script>
-    <style>
-        :root {
-            --primary: #5865f2;
-            --success: #43b581;
-            --bg: #1e1f22;
-            --card: rgba(43, 45, 49, 0.95);
-            --accent-snow: #00f2ff;
-            --text: #dbdee1;
-        }
-        body { 
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
-            background: var(--bg); color: var(--text); margin: 0; padding: 20px;
-            background-image: radial-gradient(circle at 50% 0%, #2b2d31 0%, #1e1f22 100%);
-        }
-        .container { max-width: 900px; margin: auto; }
-        h1 { text-align: center; color: #fff; font-size: 1.6rem; margin-bottom: 30px; text-shadow: 0 0 10px rgba(0,242,255,0.3); }
-        .controls { 
-            background: var(--card); border-radius: 12px; padding: 20px; 
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
-            border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px;
-        }
-        .control-group { display: flex; flex-direction: column; gap: 5px; }
-        .control-group label { font-size: 0.8rem; color: #949ba4; font-weight: bold; }
-        .time-range { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border-top: 1px solid #3f4147; padding-top: 15px; margin-top: 10px; }
-        select, input { background: #1e1f22; border: 1px solid #313338; color: #fff; padding: 10px; border-radius: 6px; outline: none; }
-        .main-search { grid-column: 1 / -1; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        .main-search:hover { filter: brightness(1.2); }
-        .sequence-card { background: var(--card); border-radius: 12px; margin-bottom: 25px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .card-header { background: rgba(0,0,0,0.3); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .card-header h3 { margin: 0; font-size: 1.1rem; color: #fff; }
-        .copy-btn { background: #4e5058; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 0.8rem; cursor: pointer; margin-left: 8px; }
-        .night-grid { display: grid; gap: 12px; padding: 20px; }
-        .round-row { display: flex; gap: 10px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; align-items: center; }
-        .round-label { width: 60px; font-size: 0.8rem; color: var(--primary); font-weight: bold; text-align: center; }
-        .weather-box { flex: 1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; text-align: center; }
-        .weather-box.snow { border: 1px solid rgba(0,242,255,0.3); background: rgba(0, 242, 255, 0.05); }
-        .weather-box strong { font-size: 0.7rem; color: #949ba4; display: block; margin-bottom: 2px; }
-        .weather-box .lt-val { color: #fff; font-weight: bold; display: block; font-size: 1rem; }
-        .weather-box .ws-val { font-size: 0.8rem; color: #72767d; }
-        .snow .ws-val { color: var(--accent-snow); font-weight: bold; }
-        @media (max-width: 700px) { .controls { grid-template-columns: 1fr 1fr; } .round-row { flex-direction: column; } .round-label { width: 100%; } }
-    </style>
 </head>
 <body>
 
