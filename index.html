@@ -3,43 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FF14 豐水之地 - 變異分析器 V3.5</title>
-    <!-- 引入獨立的 CSS 檔案 -->
+    <title>FF14 豐水之地 - 變異分析器 V4.1</title>
     <link rel="stylesheet" href="index.css">
-    <!-- 引入 JS 檔案 -->
     <script src="Weather.js"></script>
+    <script src="DiscordParser.js"></script>
 </head>
 <body>
 
-<div class="container">
-    <h1>❄️ 豐水之地：變異分析器 V3.5</h1>
-    <div class="controls">
-        <div class="control-group">
-            <label>連續輪數</label>
-            <select id="targetRounds"><option value="1">1 輪</option><option value="2">2 輪</option><option value="3" selected>3 輪</option></select>
-        </div>
-        <div class="control-group"><label>完美組 (雙雪)</label><select id="pCount"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
-        <div class="control-group"><label>變異組 (單雪)</label><select id="hCount"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
-        <div class="control-group"><label>雙變組 (無雪)</label><select id="nCount"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
-        <div class="time-range">
-            <div class="control-group"><label>開始日期</label><input type="datetime-local" id="timeStart"></div>
-            <div class="control-group"><label>結束日期</label><input type="datetime-local" id="timeEnd"></div>
-        </div>
-        <button class="main-search" onclick="searchWeather()">⚡ 執行精確序列分析</button>
+<div class="container main-layout">
+    <!-- Debug 視窗 -->
+    <div id="debugPanel">
+        <h4 style="color:var(--g-blue); margin-top:0;">🔍 Discord 解析偵錯</h4>
+        <div id="debugContent">等待輸入中...</div>
     </div>
-    <div id="results"></div>
+
+    <!-- 主要內容區 -->
+    <div class="content-area">
+        <h1>❄️ 豐水之地：變異分析器 V4.1</h1>
+        <div class="controls">
+            <div class="control-group">
+                <label>連續輪數</label>
+                <select id="targetRounds"><option value="1">1 輪</option><option value="2">2 輪</option><option value="3" selected>3 輪</option></select>
+            </div>
+            <div class="control-group"><label>完美組 (雙雪)</label><select id="pCount"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+            <div class="control-group"><label>變異組 (單雪)</label><select id="hCount"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+            <div class="control-group"><label>雙變組 (無雪)</label><select id="nCount"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+            
+            <div class="time-range">
+                <div class="control-group"><label>開始日期</label><input type="datetime-local" id="timeStart"></div>
+                <div class="control-group"><label>結束日期</label><input type="datetime-local" id="timeEnd"></div>
+            </div>
+
+            <div class="control-group" style="grid-column: 1 / -1;">
+                <div class="dc-toggle-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(138,180,248,0.05); padding:12px; border-radius:12px;">
+                    <label style="color:var(--g-text); font-size:14px;">Discord 貼文分析模式 (含跨夜支援)</label>
+                    <label class="switch"><input type="checkbox" id="enableDC" onchange="toggleDC()"><span class="slider"></span></label>
+                </div>
+                <textarea id="dcInput" style="display:none; margin-top:10px;" placeholder="在此貼入 Discord 內容..." oninput="updateDebug()"></textarea>
+            </div>
+
+            <button class="main-search" onclick="searchWeather()">⚡ 執行精確序列分析</button>
+        </div>
+
+        <div id="filterBar" class="filter-bar" style="display:none; justify-content:center; gap:10px; margin-bottom:20px;">
+            <button class="filter-btn active" onclick="setFilter('all', this)">全部顯示</button>
+            <button class="filter-btn" style="color:var(--g-red)" onclick="setFilter('conflict', this)">交集紅色</button>
+            <button class="filter-btn" style="color:var(--g-green)" onclick="setFilter('safe', this)">非交集綠色</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
 </div>
 
 <script>
 const weatherSvc = new Weather();
+const dcParser = new DiscordParser();
 const AREA = "优雷卡丰水之地";
 let currentMatches = [];
 
 const pad = (n) => String(n).padStart(2, '0');
 const fmtLT = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 const getET = (d) => Math.floor(((d.getTime() / 1000) / 175) % 24);
-
 function formatDateTime(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+
+function toggleDC() {
+    const active = document.getElementById("enableDC").checked;
+    document.getElementById("dcInput").style.display = active ? "block" : "none";
+    document.getElementById("filterBar").style.display = active ? "flex" : "none";
+    if (window.innerWidth >= 1100) document.getElementById("debugPanel").style.display = active ? "block" : "none";
+    if(active) updateDebug();
+}
+
+function updateDebug() {
+    dcParser.parse(document.getElementById("dcInput").value);
+    const data = dcParser.getDebugData();
+    let html = "";
+    const keys = Object.keys(data);
+    if(keys.length === 0) html = "找不到日期 (格式範例: 3/7)";
+    else {
+        keys.forEach(date => {
+            html += `<div class="debug-item"><strong>${date}</strong><br>`;
+            data[date].forEach(t => { html += ` └ ${t.raw} (分鐘: ${t.start}-${t.end})<br>`; });
+            html += `</div>`;
+        });
+    }
+    document.getElementById("debugContent").innerHTML = html;
+}
+
+function setFilter(mode, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.sequence-card').forEach(card => {
+        if (mode === 'all') card.style.display = 'block';
+        else if (mode === 'conflict') card.style.display = card.classList.contains('is-conflict') ? 'block' : 'none';
+        else if (mode === 'safe') card.style.display = card.classList.contains('is-safe') ? 'block' : 'none';
+    });
+}
 
 function processSequence(seq) {
     let totalSnow = 0, totalNone = 0, rounds = [];
@@ -53,16 +112,14 @@ function processSequence(seq) {
         else if (is16Snow) monster = "牛龍鬼>龍鬼";
         else if (is00Snow) monster = "龍鬼>牛龍鬼";
         else monster = "龍鬼";
-
         if (is16Snow) { start = d16; monster = "牛蜥>" + monster; } else { start = new Date(d16.getTime() + 6 * 60000); }
-        if (i < (seq.length - 1) && is00Snow) { end = d08; monster += ">牛蜥"; } 
-        else { end = new Date(d08.getTime() - 6 * 60000); }
+        if (i < (seq.length - 1) && is00Snow) { end = d08; monster += ">牛蜥"; } else { end = new Date(d08.getTime() - 6 * 60000); }
         if (is16Snow || is00Snow) totalSnow++; else totalNone++;
         rounds.push({ name: roundNames[i], start: fmtLT(start), end: fmtLT(end), collect: i === 0 ? fmtLT(new Date(start.getTime() - 20 * 60000)) : "", monster });
     });
     const dStart = new Date(seq[0].data[0][0]);
     let carType = (totalSnow === seq.length) ? (seq.length === 3 ? "三變異車" : "雙變異車") : (totalNone === seq.length ? "雙變異車" : "混合變異車");
-    return { shortDate: `${dStart.getMonth()+1}/${dStart.getDate()}`, fullRange: `${rounds[0].start}-${rounds[rounds.length-1].end}`, carType, rounds };
+    return { fullDate: `${dStart.getFullYear()}/${dStart.getMonth()+1}/${dStart.getDate()}`, shortDate: `${dStart.getMonth()+1}/${dStart.getDate()}`, fullRange: `${rounds[0].start}-${rounds[rounds.length-1].end}`, carType, rounds };
 }
 
 function copyAction(idx, type, btn) {
@@ -87,16 +144,16 @@ function copyAction(idx, type, btn) {
 function searchWeather() {
     const sTime = new Date(document.getElementById("timeStart").value);
     const eTime = new Date(document.getElementById("timeEnd").value);
+    const isDC = document.getElementById("enableDC").checked;
+    if (isDC) dcParser.parse(document.getElementById("dcInput").value);
     const targetR = parseInt(document.getElementById("targetRounds").value);
     const filters = { p: +document.getElementById("pCount").value, h: +document.getElementById("hCount").value, n: +document.getElementById("nCount").value };
     document.getElementById("results").innerHTML = "<p style='text-align:center'>穿越時空分析中...</p>";
     
     setTimeout(() => {
-        // 抓取緩衝量增加，確保序列結尾不會被切掉
         const totalToFetch = Math.ceil((eTime - sTime) / (175 * 1000)) + 500;
         const weatherList = weatherSvc.getMultipleWeathers(AREA, totalToFetch, sTime.getTime());
         currentMatches = [];
-
         for (let i = 0; i < weatherList.length - (targetR * 3); i++) {
             if (getET(new Date(weatherList[i][0])) !== 16) continue;
             let seq = [], c = { p: 0, h: 0, n: 0 };
@@ -111,21 +168,28 @@ function searchWeather() {
                 if (seqStart <= eTime) currentMatches.push(seq);
             }
         }
+
         let html = "";
         currentMatches.forEach((seq, idx) => {
             const info = processSequence(seq);
-            html += `<div class="sequence-card"><div class="card-header"><h3>${info.shortDate} <span>(${info.fullRange})</span></h3><div><button class="copy-btn" onclick="copyAction(${idx}, 'title', this)">複製標題</button><button class="copy-btn" onclick="copyAction(${idx}, 'content', this)">複製模板</button></div></div><div class="night-grid">`;
+            let dcClass = "", dcLabel = "";
+            if (isDC) {
+                const hasConflict = dcParser.hasConflict(info.fullDate, info.fullRange);
+                dcClass = hasConflict ? "is-conflict" : "is-safe";
+                dcLabel = hasConflict ? `<span class="status-label label-red">與 Discord 衝突</span>` : `<span class="status-label label-green">無衝突空檔</span>`;
+            }
+            html += `<div class="sequence-card ${dcClass}"><div class="card-header"><h3>${info.fullDate} <span>(${info.fullRange})</span>${dcLabel}</h3><div><button class="copy-btn" onclick="copyAction(${idx}, 'title', this)">複製標題</button><button class="copy-btn" onclick="copyAction(${idx}, 'content', this)">複製模板</button></div></div><div class="night-grid">`;
             seq.forEach((round, ri) => {
                 html += `<div class="round-row"><div class="round-label">第 ${ri+1} 輪</div>`;
                 round.data.forEach(item => {
-                    const dt = new Date(item[0]), et = getET(dt), isS = item[1] === '小雪';
-                    html += `<div class="weather-box ${isS?'snow':''}"><strong>(ET${et.toString().padStart(2,'0')}00)</strong><span class="lt-val">${fmtLT(dt)}</span><span class="ws-val">${item[1]}</span></div>`;
+                    const dt = new Date(item[0]), isS = item[1] === '小雪';
+                    html += `<div class="weather-box ${isS?'snow':''}"><strong>(ET${getET(dt).toString().padStart(2,'0')}00)</strong><span class="lt-val">${fmtLT(dt)}</span><span class="ws-val">${item[1]}</span></div>`;
                 });
                 html += `</div>`;
             });
             html += `</div></div>`;
         });
-        document.getElementById("results").innerHTML = html || "<p style='text-align:center'>找不到符合條件的序列組合</p>";
+        document.getElementById("results").innerHTML = html || "<p style='text-align:center'>找不到結果</p>";
     }, 100);
 }
 
