@@ -1,0 +1,261 @@
+/* 
+   Google Dark Mode Style - FF14 Analyzer V3.5
+   Wide Layout Edition (1000px)
+*/
+
+:root {
+    --g-blue: #8ab4f8;          /* Google 暗色專用藍 */
+    --g-green: #81c995;         /* Google 暗色專用綠 */
+    --g-bg: #202124;            /* 招牌深灰底 */
+    --g-surface: #2b2d31;       /* 表面色 */
+    --g-card: #202124;          /* 卡片底色 */
+    --g-text: #e8eaed;          /* 亮灰文字 */
+    --g-text-sub: #9aa0a6;      /* 中灰副標 */
+    --g-border: #3c4043;        /* 深色分隔線 */
+    --g-hover: rgba(138, 180, 248, 0.08);
+}
+
+body { 
+    font-family: 'Google Sans', 'Roboto', 'PingFang TC', Arial, sans-serif; 
+    background-color: var(--g-bg); 
+    color: var(--g-text); 
+    margin: 0; 
+    padding: 40px 20px;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+}
+
+/* 寬度優化：從 840px 提升至 1000px */
+.container { 
+    max-width: 1000px; 
+    margin: auto; 
+}
+
+h1 { 
+    text-align: center; 
+    color: var(--g-text); 
+    font-size: 32px; 
+    font-weight: 400;
+    margin-bottom: 40px;
+    letter-spacing: -0.5px;
+}
+
+/* 控制面板 - 增加內距與呼吸感 */
+.controls { 
+    background: var(--g-surface); 
+    border-radius: 28px; 
+    padding: 32px 40px; 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 24px;
+    border: 1px solid var(--g-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+    margin-bottom: 40px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label { 
+    font-size: 13px; 
+    color: var(--g-blue); 
+    font-weight: 500; 
+    padding-left: 4px;
+}
+
+/* 圓潤的輸入框 */
+select, input { 
+    background: #303134; 
+    border: 1px solid var(--g-border); 
+    color: #fff; 
+    padding: 12px 16px; 
+    border-radius: 12px; 
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+select:focus, input:focus {
+    border-color: var(--g-blue);
+    background: #35363a;
+    box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.2);
+}
+
+/* 時間範圍區塊 */
+.time-range { 
+    grid-column: 1 / -1; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 30px; 
+    padding-top: 24px;
+    margin-top: 8px;
+    border-top: 1px solid var(--g-border);
+}
+
+/* 搜尋按鈕 - 經典 Google 膠囊感 */
+.main-search { 
+    grid-column: 1 / -1; 
+    background: var(--g-blue); 
+    color: #202124; 
+    border: none; 
+    padding: 14px 32px; 
+    border-radius: 100px; 
+    font-weight: 600; 
+    font-size: 15px;
+    cursor: pointer; 
+    transition: background 0.2s, transform 0.1s;
+    margin: 10px auto 0; /* 置中並限制寬度 */
+    min-width: 200px;
+}
+
+.main-search:hover { 
+    background: #aecbfa;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.main-search:active {
+    transform: scale(0.98);
+}
+
+/* 結果卡片系統 */
+.sequence-card { 
+    background: var(--g-card); 
+    border-radius: 20px; 
+    margin-bottom: 30px; 
+    border: 1px solid var(--g-border);
+    overflow: hidden;
+    transition: border 0.2s;
+}
+
+.sequence-card:hover {
+    border-color: #5f6368;
+}
+
+.card-header { 
+    padding: 20px 32px; 
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--g-border);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.card-header h3 { 
+    margin: 0; 
+    font-size: 18px; 
+    font-weight: 500;
+}
+
+.card-header h3 span {
+    color: var(--g-text-sub);
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 12px;
+}
+
+.copy-btn { 
+    background: transparent; 
+    color: var(--g-blue); 
+    border: 1px solid var(--g-border); 
+    padding: 8px 20px; 
+    border-radius: 100px; 
+    font-size: 13px; 
+    font-weight: 500;
+    cursor: pointer; 
+    margin-left: 10px;
+    transition: all 0.2s;
+}
+
+.copy-btn:hover { 
+    background: var(--g-hover);
+    border-color: var(--g-blue);
+}
+
+/* 天氣列表佈局優化 */
+.night-grid { 
+    padding: 32px; 
+}
+
+.round-row { 
+    display: flex; 
+    gap: 24px; 
+    padding: 20px 24px; 
+    background: #28292c;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    align-items: center;
+}
+
+.round-label { 
+    width: 80px; 
+    font-size: 14px; 
+    color: var(--g-text-sub); 
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.weather-box { 
+    flex: 1; 
+    background: #303134; 
+    padding: 16px; 
+    border-radius: 12px;
+    text-align: center; 
+    min-width: 120px;
+    border: 1px solid transparent;
+}
+
+/* 強化雪地的高亮視覺 */
+.weather-box.snow { 
+    background: rgba(129, 201, 149, 0.08);
+    border: 1px solid rgba(129, 201, 149, 0.25);
+}
+
+.weather-box strong { 
+    font-size: 11px; 
+    color: var(--g-text-sub); 
+    display: block; 
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.weather-box .lt-val { 
+    color: #fff; 
+    font-weight: 500; 
+    font-size: 18px; 
+    display: block;
+}
+
+.weather-box .ws-val { 
+    font-size: 13px; 
+    color: var(--g-text-sub); 
+    margin-top: 4px;
+    display: block;
+}
+
+.snow .ws-val { 
+    color: var(--g-green); 
+    font-weight: 600; 
+}
+
+/* 針對小螢幕的自動縮減佈局 */
+@media (max-width: 800px) {
+    .controls {
+        grid-template-columns: 1fr 1fr;
+        padding: 24px;
+    }
+    .round-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    .round-label {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid var(--g-border);
+        padding-bottom: 10px;
+    }
+}
