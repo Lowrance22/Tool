@@ -89,7 +89,12 @@ function searchWeather() {
     const sTime = new Date(document.getElementById("timeStart").value);
     const eTime = new Date(document.getElementById("timeEnd").value);
     const targetR = parseInt(document.getElementById("targetRounds").value);
-    const filters = { p: +document.getElementById("pCount").value, h: +document.getElementById("hCount").value, n: +document.getElementById("nCount").value };
+    const filters = { 
+        p: +document.getElementById("pCount").value, 
+        h: +document.getElementById("hCount").value, 
+        n: +document.getElementById("nCount").value,
+        minSnow: +document.getElementById("minSnowCount").value
+    };
     const isWorkerMode = document.getElementById("workerMode").checked;
 
     document.getElementById("results").innerHTML = "<p style='text-align:center'>穿越時空分析中...</p>";
@@ -103,38 +108,36 @@ function searchWeather() {
             const seqStartRaw = new Date(weatherList[i][0]);
             if (getET(seqStartRaw) !== 16) continue;
 
-            // --- 社畜邏輯過濾注入 ---
+            // 社畜邏輯
             if (isWorkerMode) {
-                const day = seqStartRaw.getDay(); // 0(日), 1(一), 2(二), 3(三), 4(四), 5(五), 6(六)
+                const day = seqStartRaw.getDay(); 
                 const hour = seqStartRaw.getHours();
                 let isFriendly = false;
-
-                if (day >= 1 && day <= 4) { 
-                    // (一)~(四): 19:00 後至 22:00 前開始
-                    if (hour >= 19 && hour < 22) isFriendly = true;
-                } else if (day === 5) {
-                    // (五): 19:00 後開始 (直到跨日)
-                    if (hour >= 19) isFriendly = true;
-                } else if (day === 6) {
-                    // (六): 全天
-                    isFriendly = true;
-                } else if (day === 0) {
-                    // (日): 22:00 前結束 (這裡以開始時間為準)
-                    if (hour < 22) isFriendly = true;
-                }
-
+                if (day >= 1 && day <= 4) { if (hour >= 19 && hour < 22) isFriendly = true; }
+                else if (day === 5) { if (hour >= 19) isFriendly = true; }
+                else if (day === 6) { isFriendly = true; }
+                else if (day === 0) { if (hour < 22) isFriendly = true; }
                 if (!isFriendly) continue;
             }
-            // -----------------------
 
-            let seq = [], c = { p: 0, h: 0, n: 0 };
+            let seq = [], c = { p: 0, h: 0, n: 0 }, snowCount = 0;
             for (let g = 0; g < targetR; g++) {
                 const b = i + (g * 3);
                 const w1 = weatherList[b][1], w2 = weatherList[b+1][1];
-                if (w1 === "小雪" && w2 === "小雪") c.p++; else if (w1 === "小雪" || w2 === "小雪") c.h++; else c.n++;
+                
+                // 累加夜晚雪數 (ET16 與 ET00)
+                if (w1 === "小雪") snowCount++;
+                if (w2 === "小雪") snowCount++;
+
+                if (w1 === "小雪" && w2 === "小雪") c.p++; 
+                else if (w1 === "小雪" || w2 === "小雪") c.h++; 
+                else c.n++;
+                
                 seq.push({ data: [weatherList[b], weatherList[b+1], weatherList[b+2]] });
             }
-            if (c.p >= filters.p && c.h >= filters.h && c.n >= filters.n) {
+
+            // 同時符合組數篩選與雪數篩選
+            if (c.p >= filters.p && c.h >= filters.h && c.n >= filters.n && snowCount >= filters.minSnow) {
                 const seqStart = new Date(seq[0].data[0][0]);
                 if (seqStart <= eTime) currentMatches.push(seq);
             }
