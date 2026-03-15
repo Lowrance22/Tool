@@ -108,7 +108,7 @@ function searchWeather() {
             const seqStartRaw = new Date(weatherList[i][0]);
             if (getET(seqStartRaw) !== 16) continue;
 
-            // 社畜邏輯
+            // 社畜模式
             if (isWorkerMode) {
                 const day = seqStartRaw.getDay(); 
                 const hour = seqStartRaw.getHours();
@@ -120,24 +120,26 @@ function searchWeather() {
                 if (!isFriendly) continue;
             }
 
-            let seq = [], c = { p: 0, h: 0, n: 0 }, snowCount = 0;
+            let seq = [], c = { p: 0, h: 0, n: 0 }, nightSnowTotal = 0;
             for (let g = 0; g < targetR; g++) {
                 const b = i + (g * 3);
-                const w1 = weatherList[b][1], w2 = weatherList[b+1][1];
+                const w16 = weatherList[b][1];  // ET16:00
+                const w00 = weatherList[b+1][1]; // ET00:00
                 
-                // 累加夜晚雪數 (ET16 與 ET00)
-                if (w1 === "小雪") snowCount++;
-                if (w2 === "小雪") snowCount++;
+                // 累加夜晚雪數：只看 16 與 00
+                if (w16 === "小雪") nightSnowTotal++;
+                if (w00 === "小雪") nightSnowTotal++;
 
-                if (w1 === "小雪" && w2 === "小雪") c.p++; 
-                else if (w1 === "小雪" || w2 === "小雪") c.h++; 
+                // 判斷變異組數邏輯
+                if (w16 === "小雪" && w00 === "小雪") c.p++; 
+                else if (w16 === "小雪" || w00 === "小雪") c.h++; 
                 else c.n++;
                 
                 seq.push({ data: [weatherList[b], weatherList[b+1], weatherList[b+2]] });
             }
 
-            // 同時符合組數篩選與雪數篩選
-            if (c.p >= filters.p && c.h >= filters.h && c.n >= filters.n && snowCount >= filters.minSnow) {
+            // 同時檢查 變異組數需求 與 夜晚雪數需求
+            if (c.p >= filters.p && c.h >= filters.h && c.n >= filters.n && nightSnowTotal >= filters.minSnow) {
                 const seqStart = new Date(seq[0].data[0][0]);
                 if (seqStart <= eTime) currentMatches.push(seq);
             }
