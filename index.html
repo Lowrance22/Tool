@@ -61,6 +61,20 @@
                     <option value="3">3</option>
                 </select>
             </div>
+
+            <!-- 新增：夜晚雪數篩選 -->
+            <div class="control-group">
+                <label>夜晚雪數 (至少)</label>
+                <select id="minSnowCount">
+                    <option value="0" selected>0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
             
             <!-- 時間範圍設定 -->
             <div class="time-range">
@@ -74,16 +88,16 @@
                 </div>
             </div>
 
-<!-- 移除 dc-toggle-row 與 textarea -->
-<div class="control-group" style="grid-column: 1 / -1;">
-    <div class="filter-toggle-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(138,180,248,0.1); padding:12px; border-radius:12px;">
-        <label style="color:var(--g-blue); font-size:14px; font-weight:bold;">👔 只顯示社畜友善時段 (平日晚間/週末)</label>
-        <label class="switch">
-            <input type="checkbox" id="workerMode">
-            <span class="slider"></span>
-        </label>
-    </div>
-</div>
+            <!-- 社畜模式開關 -->
+            <div class="control-group" style="grid-column: 1 / -1;">
+                <div class="filter-toggle-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(138,180,248,0.1); padding:12px; border-radius:12px;">
+                    <label style="color:var(--g-blue); font-size:14px; font-weight:bold;">👔 只顯示社畜友善時段 (平日晚間/週末)</label>
+                    <label class="switch">
+                        <input type="checkbox" id="workerMode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
 
             <button class="main-search" onclick="searchWeather()">⚡ 執行精確序列分析</button>
         </div>
