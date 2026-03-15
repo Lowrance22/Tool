@@ -62,7 +62,7 @@ function processSequence(seq) {
         rounds.push({ name: roundNames[i], start: fmtLT(start), end: fmtLT(end), collect: i === 0 ? fmtLT(new Date(start.getTime() - 20 * 60000)) : "", monster });
     });
     const dStart = new Date(seq[0].data[0][0]);
-    let carType = (totalSnow === seq.length) ? (seq.length === 3 ? "三變異車" : "雙變異車") : (totalNone === seq.length ? "雙變異車" : "混合變異車");
+    let carType = (totalSnow === seq.length) ? (seq.length === 3 ? "三變異車" : "雙變異車") : (totalNone === seq.length ? "雙變異車" : "雙+三變異車");
     return { fullDate: `${dStart.getFullYear()}/${dStart.getMonth()+1}/${dStart.getDate()}`, shortDate: `${dStart.getMonth()+1}/${dStart.getDate()}`, fullRange: `${rounds[0].start}-${rounds[rounds.length-1].end}`, carType, rounds };
 }
 
